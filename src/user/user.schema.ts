@@ -20,7 +20,7 @@ export class User {
   password: string;
 
 
-  @Prop({required: true, type: 'string',enum: ["Admin","User"]})
+  @Prop({ type: 'string',enum: ["Admin","User"]})
   role: string;
 
 
@@ -38,9 +38,9 @@ Age: string;
 
 
 @Prop({
-  type: 'Number'
+  type: 'string'
 })
-PhoneNumber: number;
+PhoneNumber: string;
 
 
 

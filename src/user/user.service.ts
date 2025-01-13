@@ -4,7 +4,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
+import { Request } from 'express';
+import * as bcrypt from 'bcrypt';
+const saltOrRounds = 10;
 @Injectable()
 export class UserService {
   constructor(
@@ -12,7 +14,8 @@ export class UserService {
     private usermodel: Model<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+create(createUserDto: CreateUserDto) {
+
     return this.usermodel.create(createUserDto);
   }
 
