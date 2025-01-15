@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket User Test</title>
+  <style>
+    /* Style for the notification icon */
+    #notification-icon {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      background-image: url('https://via.placeholder.com/150'); /* Replace with your icon */
+      background-size: cover;
+      border-radius: 50%;
+    }
+
+    /* Style for the notification count */
+    #notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Users</h1>
+  <ul id="user-list"></ul>
+
+  <!-- Notification Icon with Counter -->
+  <div id="notification-icon">
+    <div id="notification-count" style="display: none;">0</div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    // Connect to the WebSocket server
+    const socket = io('http://localhost:3000'); // Adjust the URL to your backend
+
+    // Request permission to show notifications
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+
+    // Counter for the number of notifications
+    let notificationCount = localStorage.getItem('notificationCount') || 0;
+    notificationCount = parseInt(notificationCount, 10);
+
+    // Update notification count if stored in localStorage
+    const countElement = document.getElementById('notification-count');
+    countElement.textContent = notificationCount;
+    if (notificationCount > 0) {
+      countElement.style.display = 'block';
+    }
+
+    // Listen for 'user_created' events
+    socket.on('user_created', (user) => {
+      console.log('New user created:', user);
+
+      // Add the user to the list
+      const userList = document.getElementById('user-list');
+      const listItem = document.createElement('li');
+      listItem.textContent = `Name: ${user.name}, Email: ${user.email}`;
+      userList.appendChild(listItem);
+
+      // Update notification count
+      notificationCount++;
+      localStorage.setItem('notificationCount', notificationCount); // Store in localStorage
+
+      // Show notification count
+      countElement.textContent = notificationCount;
+      countElement.style.display = 'block';
+
+      // Show a notification
+      if (Notification.permission === 'granted') {
+        new Notification('New user created', {
+          body: `Name: ${user.name}, Email: ${user.email}`,
+          icon: 'https://via.placeholder.com/150', // Customize with your icon
+        });
+      }
+    });
+  </script>
+</body>
+</html>
