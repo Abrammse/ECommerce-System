@@ -11,9 +11,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  // @Roles(['admin'])
-  // @UseGuards(AuthGuard)
-  create(@Body(new ValidationPipe({forbidNonWhitelisted:true})) createUserDto: CreateUserDto 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard)
+  create(@Body(new ValidationPipe({forbidNonWhitelisted:true})) createUserDto: CreateUserDto ,@Req() req,
 ) {
     return this.userService.create(createUserDto);
   }
