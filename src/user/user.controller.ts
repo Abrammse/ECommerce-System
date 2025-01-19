@@ -38,3 +38,36 @@ export class UserController {
     return this.userService.remove(id);
   }
 }
+
+@Controller('v1/userMe')
+export class UserMeController {
+  constructor(private readonly userService: UserService) {}
+  @Get()
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard)
+  getMe(@Req() req) {
+    return this.userService.getMe(req.user);
+  }
+  @Patch()
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard)
+  updateMe(
+    @Req() req,
+    @Body(new ValidationPipe({ forbidNonWhitelisted: true }))
+    updateUserDto: UpdateUserDto,
+ 
+  ) {
+    return this.userService.updateMe(req.user, updateUserDto);
+  }
+
+
+    //  @docs   Any User can unActive your account
+  //  @Route  DELETE /api/v1/user/me
+  //  @access Private [user]
+  @Delete()
+  @Roles(['user'])
+  @UseGuards(AuthGuard)
+  deleteMe(@Req() req) {
+    return this.userService.deleteMe(req.user);
+  }
+}

@@ -23,7 +23,7 @@ export class CreateUserDto {
 
     //role//
     @IsString({message:"role must be a string"})
-    @IsEnum(['User' , 'Admin'], {message:"role must be a user or admin "})
+    @IsEnum(['user' , 'admin'], {message:"role must be a user or admin "})
     @IsOptional()
     role: string;
 
